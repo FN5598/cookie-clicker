@@ -3,28 +3,48 @@ const Factories = [{
   startingPrice: 15,
   amount: 0,
   id: 1,
-  cookiesPerSecond: 0.1
+  cookiesPerSecond: 0.1,
+  basePrice: 15
 },
 {
   name: 'Grandma',
   startingPrice: 100,
   amount: 0,
   id: 2,
-  cookiesPerSecond: 1
+  cookiesPerSecond: 1,
+  basePrice: 100
+},
+{
+  name: 'Farm',
+  startingPrice: 1100,
+  amount: 0,
+  id: 3,
+  cookiesPerSecond: 8,
+  basePrice: 1100
+},
+{
+  name: 'Mine',
+  startingPrice: 12000,
+  amount: 0,
+  id: 4,
+  cookiesPerSecond: 47,
+  basePrice: 12000
 }];
 
-let Cookies = 100;
+let Cookies = 10000;
 let cookiesPerSecond = 0;
 
 const FactoriesHTML = document.querySelector('.js-factories');
 
+
 Factories.forEach((factory, index) => {
+    let startingPrice = factory.startingPrice;
     const specificFactory = `
     <div class="specific-factory" data-index="${index}">
       <img src="Images/Factories/${factory.name}.png" class="factory-image">
       <div>
         <p class="factory-name">${factory.name}</p>
-        <p class="factory-cost">${factory.startingPrice}</p>
+        <p class="factory-cost">${Math.floor(startingPrice)}</p>
       </div>
       <div class="factory-amount">
         <p>${factory.amount}</p>
@@ -33,9 +53,6 @@ Factories.forEach((factory, index) => {
   `;
   FactoriesHTML.innerHTML += specificFactory;
 });
-
-
-
 
   FactoriesHTML.addEventListener('click', (event) => {
     const factoryElement = event.target.closest('.specific-factory');
@@ -48,13 +65,14 @@ Factories.forEach((factory, index) => {
       console.log(`Not enough cookies to purchase ${factory.name}`);
     } else {
       Cookies -= factory.startingPrice;
+      let factoriesOwned = factory.amount;
       factory.amount += 1;
-      factory.startingPrice *= 2;
+      factory.startingPrice = factory.basePrice * Math.pow(1.15, factoriesOwned - 1);
 
       factoryCost = document.querySelectorAll('.factory-cost');
       factoryAmount = document.querySelectorAll('.factory-amount p');
 
-      factoryCost[index].innerHTML = factory.startingPrice;
+      factoryCost[index].innerHTML = Math.floor(factory.startingPrice);
       factoryAmount[index].innerHTML = factory.amount;
     }
   });
@@ -65,7 +83,7 @@ Factories.forEach((factory, index) => {
   `
     <div>
       <p class="factory-name">${factoryName}</p>
-      <p class="total-cookies-baked">${Cookies} Total Cookies</p>
+      <p class="total-cookies-baked">${Math.floor(Cookies)} Total Cookies</p>
       <p class="cookies-per-second">${cookiesPerSecond} Cookies per Second</p>
       <button class="cookie-click-button"><img src="Images/Cookie.png" class="cookie-click-image"></button>
     </div>
@@ -91,3 +109,8 @@ setInterval(() => {
   document.querySelector('.cookies-per-second').innerHTML = `${cookiesPerSecond} cookies per second`;
 }, 1000)
 
+let sugarLumps = 0;
+setInterval(() => {
+  sugarLumps++;
+  document.querySelector('.sugar-lumps').innerText = `${sugarLumps}`;
+}, 1000);
