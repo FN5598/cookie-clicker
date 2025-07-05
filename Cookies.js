@@ -7,7 +7,8 @@ const Factories = [{
   basePrice: 15,
   totalCookiesBaked: 0,
   firstBoughtTime: null,
-  lore: `"Autoclicks once every 10 seconds."`
+  lore: `"Autoclicks once every 10 seconds."`,
+  upgrade: 0
 },
 {
   name: 'Grandma',
@@ -18,7 +19,8 @@ const Factories = [{
   basePrice: 100,
   totalCookiesBaked: 0,
   firstBoughtTime: null,
-  lore: `"A nice grandma to bake more cookies."`
+  lore: `"A nice grandma to bake more cookies."`,
+  upgrade: 0
 },
 {
   name: 'Farm',
@@ -29,7 +31,8 @@ const Factories = [{
   basePrice: 1100,
   totalCookiesBaked: 0,
   firstBoughtTime: null,
-  lore: `"Grows cookie plants from cookie seeds."`
+  lore: `"Grows cookie plants from cookie seeds."`,
+  upgrade: 0
 },
 {
   name: 'Mine',
@@ -40,7 +43,8 @@ const Factories = [{
   basePrice: 12000,
   totalCookiesBaked: 0,
   firstBoughtTime: null,
-  lore: `"Mines out cookies dough and chocolate chips."`
+  lore: `"Mines out cookies dough and chocolate chips."`,
+  upgrade: 0
 },
 {
   name: "Factory",
@@ -51,11 +55,13 @@ const Factories = [{
   basePrice: 130000,
   totalCookiesBaked: 0,
   firstBoughtTime: null,
-  lore: `"Produces large quantities of cookies."`
+  lore: `"Produces large quantities of cookies."`,
+  upgrade: 0
 }];
 
 let Cookies = 13000;
 let cookiesPerSecond = 0;
+let hoveredFactoryIndex = null;
 
 const FactoriesHTML = document.querySelector('.js-factories');
 
@@ -87,7 +93,8 @@ Factories.forEach((factory, index) => {
     const factory = Factories[index];
 
     if(Cookies < factory.startingPrice) {
-
+      console.log("Not enough Cookies");
+      return;
     } else {
       Cookies -= factory.startingPrice;     
 
@@ -110,7 +117,7 @@ Factories.forEach((factory, index) => {
     hoverBoxUpdate(factory);
   });
 
-  let factoryName = localStorage.getItem('FactoryName');
+  let factoryName = localStorage.getItem('FactoryName') || 'Gay';
   const cookiesHTML = 
     // Left Side Cookie Clicker
   `
@@ -121,13 +128,31 @@ Factories.forEach((factory, index) => {
         <p class="cookies-per-second">per second: ${Math.floor(cookiesPerSecond)}</p>
       </div>
     </div>
-    <button class="cookie-click-button" onclick="bigCookie()"><img src="Images/Cookie.png" class="cookie-click-image"></button>
+        <div class="circle-container">
+        <button class="cookie-click-button" onclick="bigCookie()"><img src="Images/Cookie.png" class="cookie-click-image"></button>
+        <div class="circle-path"></div>
+        <!-- Clockwise blocks -->
+        <div class="spinning-block block-1"></div>
+        <div class="spinning-block block-2"></div>
+        <div class="spinning-block block-3"></div>
+        <div class="spinning-block block-4"></div>
+        <div class="spinning-block block-5"></div>
+        <div class="spinning-block block-6"></div>
+        <!-- Counter-clockwise blocks -->
+        <div class="reverse-spinning-block reverse-block-1"></div>
+        <div class="reverse-spinning-block reverse-block-2"></div>
+        <div class="reverse-spinning-block reverse-block-3"></div>
+        <div class="reverse-spinning-block reverse-block-4"></div>
+        <div class="reverse-spinning-block reverse-block-5"></div>
+        <div class="reverse-spinning-block reverse-block-6"></div>
+    </div>
     <div class="milk-container">
       <img src="Images/MilkPlain.png" class="milk-image">
     </div>
   `;
 
 document.querySelector('.cookie-container').innerHTML = cookiesHTML;
+
 
 function calculateCookiesPerSecond() {
     let total = 0;
@@ -184,13 +209,13 @@ FactoriesHTML.addEventListener('mouseover', function(event) {
   const rect = factoryElement.getBoundingClientRect();
   const hoverBoxWidth = 370; 
   const hoverBoxHeight = 190;
-  const gap = 25;
+  const gap = -170;
 
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
   const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
 
   let left = rect.right + scrollLeft + gap;
-  let top = rect.top + scrollTop;
+  let top = rect.top + scrollTop + 100;
 
   // If it would go off the right edge, flip to the left
   if (left + hoverBoxWidth > window.innerWidth + scrollLeft) {
@@ -204,8 +229,6 @@ FactoriesHTML.addEventListener('mouseover', function(event) {
   hoverBox.style.left = `${left}px`;
   hoverBox.style.top = `${top}px`;
   hoverBox.style.display = 'block';
-  console.log(rect.top);
-  console.log(rect.left)
 });
 
 FactoriesHTML.addEventListener('mouseout', function(event) {
@@ -214,8 +237,6 @@ FactoriesHTML.addEventListener('mouseout', function(event) {
   hoverBox.style.display = 'none';
 });
 
-
-let hoveredOverFactory = null;
 function hoverBoxUpdate(factory) {
   const hoverHTML = `
     <div class="hover-specific-factory">
@@ -243,23 +264,11 @@ let nameButton = document.querySelector('.change-name-container');
 function changeName() {
   let changeNameButton = document.querySelector('.factory-username');
   changeNameButton.addEventListener('click', function(event) {
-    // const clickEvent =  event.target.closest('.factory-username');
+
     if(!nameButton) return;
 
   ChangeNameClick();
 
-  // const rect = clickEvent.getBoundingClientRect();
-  // const nameButtonWidth = 268; 
-  // const nameButtonHeight = 117;
-
-  // const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  // const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
-
-  // let left = (rect.right + scrollLeft) / 2
-  // let top = (rect.top + scrollTop) / 2;
-
-  // nameButton.style.left = `${left}px`;
-  // nameButton.style.top = `${top}px`;
   nameButton.style.display = 'block';
   })
 }

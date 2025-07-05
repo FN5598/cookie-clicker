@@ -193,12 +193,10 @@ p:focus {
     cursor: pointer;
 }
 
-.cookie-click-image {
-    width: 200px;
-}
 
 .cookie-click-image:active {
-    width: 195px;   
+    width: 295px;   
+    height: 295px;
 }
 
 .factory-name-cookies-cps-container{
@@ -484,4 +482,93 @@ p:focus {
 
 .change-name-buttons-container button:hover {
     border: 1px solid white;
+}
+
+
+
+
+.circle-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+}
+
+.circle-path {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.cookie-click-image {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.spinning-block {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background-color: rgba(255,255,255,0);
+    top: 77%;
+    left: 50%;
+    margin-left: -25px;
+    margin-right: -50px;
+    transform-origin: 25px -110px;
+    animation: spin 12s linear infinite;
+    border-radius: 4px;
+    box-shadow: 0 0 100px 50px rgba(255,255,255,1);
+    transform: rotate(10deg);
+}
+
+.reverse-spinning-block {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background-color: rgba(200, 200, 200, 0);
+    top: 77%;
+    left: 50%;
+    margin-left: -25px;
+    margin-right: -50px;
+    transform-origin: 25px -110px;
+    animation: spin-reverse 12s linear infinite;
+    border-radius: 4px;
+    box-shadow: 0 0 100px 50px rgba(255,255,255,1);
+    transform: rotate(-10deg);
+}
+
+/* Clockwise blocks */
+.block-1 { animation-delay: 0s; }
+.block-2 { animation-delay: -2s; }
+.block-3 { animation-delay: -4s; }
+.block-4 { animation-delay: -6s; }
+.block-5 { animation-delay: -8s; }
+.block-6 { animation-delay: -10s; }
+
+/* Counter-clockwise blocks */
+.reverse-block-1 { animation-delay: 1s; }
+.reverse-block-2 { animation-delay: 3s; }
+.reverse-block-3 { animation-delay: 5s; }
+.reverse-block-4 { animation-delay: 7s; }
+.reverse-block-5 { animation-delay: 9s; }
+.reverse-block-6 { animation-delay: 11s; }
+
+@keyframes spin {
+    0% { transform: rotate(0deg) rotate(10deg); }
+    100% { transform: rotate(360deg) rotate(10deg); }
+}
+
+@keyframes spin-reverse {
+    0% { transform: rotate(0deg) rotate(-10deg); }
+    100% { transform: rotate(-360deg) rotate(-10deg); }
 }
