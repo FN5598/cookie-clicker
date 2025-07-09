@@ -2,11 +2,12 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     background-image: url('Images/Background.png');
     background-size: contain;
     position: relative;
+    overflow: hidden;
 }
 .change-name-container,
 .hover-container {
@@ -36,7 +37,7 @@ p:focus {
 
 .main-container {
     display: grid;
-    grid-template-columns: 576px 15px 995px 15px 315px;
+    grid-template-columns: 576px 15px 995px 15px 1fr;
     height: 100vh;
 }
 
@@ -44,7 +45,7 @@ p:focus {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 .factory-container {
     background-color: transparent;
@@ -61,24 +62,10 @@ p:focus {
 
 .milk-container {
     width: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-}
-
-.news-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.stats-legacy-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 500px;
 }
 
 .buy-sell-buttons {
@@ -95,22 +82,54 @@ p:focus {
     align-items: center;
     justify-content: flex-start;
     gap: 20px;
-    margin-bottom: 10px;
+    background-color: rgb(36, 36, 36);
+}   
+
+.purchase-buttons button {
+    background-color: transparent;
+    border: none;
+    color: rgb(169, 168, 168);
+    text-shadow: 1px 3px 1px rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.purchase-buttons button:hover {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.9);
 }
 
 .factory-name-cost-container {
     gap: 0px;
 }
 
+.buy-sell-buttons {
+    margin-left: 10px;
+}
+
 .specific-factory {
     display: grid;
-    grid-template-columns: 75px 125px 100px;
+    grid-template-columns: 75px 125px 1fr;
+    grid-template-rows: 64px;
     align-items: center;
     background-image: url('Images/image.png');
     background-size: cover;
     background-repeat: no-repeat;
     cursor: pointer;
     position: relative;
+    border-width: 6px;
+    border-style: solid;
+    border-bottom-color: rgb(112, 102, 80);
+    border-right-color: rgb(112, 102, 80);
+    border-top-color: rgb(180, 164, 126);
+    border-left-color: rgb(180, 164, 126);
+}
+
+.specific-factory img {
+    width: 70px;
+    height: 64px;
+    object-fit: cover;
 }
 
 .hover-specific-factory {
@@ -134,19 +153,12 @@ p:focus {
 }
 
 
-.shadow-box-surround:hover {
+.specific-factory:hover {
     filter: brightness(1.2);
 }
 
-.shadow-box-surround:active {
+.specific-factory:active {
     filter:brightness(0.8)
-}
-
-.shadow-box-surround {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
-    padding: 8px 0px 8px 8px;
-    background: linear-gradient(#8f8165, #504949);
-    transition: filter 0.2s; 
 }
 
 .factory-image {
@@ -158,6 +170,9 @@ p:focus {
     vertical-align: center;
     color: #00ff00;
     text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.5);
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: clip;
 }
 
 .factory-cost::before {
@@ -180,19 +195,16 @@ p:focus {
 }
 
 .factory-name {
-    font-size: 35px;
+    font-size: 25px;
     color: white;
     text-shadow: 1px 2px 1px rgba(0, 0, 0, 0.5);
     font-family: 'Times New Roman', Times, serif;
     font-weight: bold;
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: clip;
+    max-height: 40px;
 }
-
-.cookie-click-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-}
-
 
 .cookie-click-image:active {
     width: 295px;   
@@ -225,7 +237,7 @@ p:focus {
 
 .divider-container {
     height: 12px;
-    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.7);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 1);
 }
 
 .gray-divider {
@@ -513,6 +525,7 @@ p:focus {
     z-index: 10;
     border-radius: 50%;
     object-fit: cover;
+    cursor: pointer;
 }
 
 .spinning-block {
@@ -571,4 +584,130 @@ p:focus {
 @keyframes spin-reverse {
     0% { transform: rotate(0deg) rotate(-10deg); }
     100% { transform: rotate(-360deg) rotate(-10deg); }
+}
+
+.user-buttons-news-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+}
+
+.legacy-info-buttons,
+.option-stats-buttons {
+    display: flex;
+    flex-direction: column;
+    background-repeat: no-repeat;
+    background-size: contain;
+    align-items: center;
+    position: relative;
+    width: 110px;
+    height: 110px
+}
+
+.legacy-b1, .info-b2,
+.option-stats-buttons-b1,
+.option-stats-buttons-b2 {
+    background-color: transparent;
+    border: none;
+    color: rgb(178, 177, 177);
+    font-weight: bold;
+    font-size: 17px;
+    width: 120px;
+}
+
+.option-stats-buttons-b1 {
+    border: 1px solid rgb(70, 49, 3);
+    padding: 9px 0px;
+    max-width: 90px;
+    border-radius: 6px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.option-stats-buttons-b1::before {
+    content: '';
+    background-image: url('Images/Buttons-Background.png');
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-size: cover;
+}
+
+.legacy-info-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.purchase-store-p1 {
+    font-size: 40px;
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.purchase-wrapper {
+    width: 100%;
+    background-color: transparent;
+    backdrop-filter: brightness(0.6);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 100vh;
+}
+
+.purchase-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgb(71, 71, 71);
+}
+
+.purchase-wrapper::-webkit-scrollbar-track {
+    background-color: black;
+}
+
+.upgrades-container {
+    color: white;
+    height: 30px;
+}
+
+.active-glow {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.9) !important;
+}
+
+.quantity-max-button {
+    display: none;
+}
+
+.info-b2::before {
+    content: '';
+    background-image: url('Images/Buttons-Background-180-Deg.png');
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    top: 0;
+    right: 0;
+    z-index: -1;
+    background-size: cover;
+}
+
+.info-b2 {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.legacy-b1 {
+    border: 1px solid rgb(70, 49, 3);
+    padding: 5px 0px;
+    border-radius: 6px;
+    width: 80px;
+    align-items: end;
+    font-size: 13px;    
+}
+
+.buy-factories-container {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 100vh;
 }

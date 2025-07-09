@@ -1,97 +1,60 @@
-const Factories = [{
-  name: 'Cursor',
-  startingPrice: 15,
-  amount: 0,
-  id: 1,
-  cookiesPerSecond: 0.1,
-  basePrice: 15,
-  totalCookiesBaked: 0,
-  firstBoughtTime: null,
-  lore: `"Autoclicks once every 10 seconds."`,
-  upgrade: 0
-},
-{
-  name: 'Grandma',
-  startingPrice: 100,
-  amount: 0,
-  id: 2,
-  cookiesPerSecond: 1,
-  basePrice: 100,
-  totalCookiesBaked: 0,
-  firstBoughtTime: null,
-  lore: `"A nice grandma to bake more cookies."`,
-  upgrade: 0
-},
-{
-  name: 'Farm',
-  startingPrice: 1100,
-  amount: 0,
-  id: 3,
-  cookiesPerSecond: 8,
-  basePrice: 1100,
-  totalCookiesBaked: 0,
-  firstBoughtTime: null,
-  lore: `"Grows cookie plants from cookie seeds."`,
-  upgrade: 0
-},
-{
-  name: 'Mine',
-  startingPrice: 12000,
-  amount: 0,
-  id: 4,
-  cookiesPerSecond: 47,
-  basePrice: 12000,
-  totalCookiesBaked: 0,
-  firstBoughtTime: null,
-  lore: `"Mines out cookies dough and chocolate chips."`,
-  upgrade: 0
-},
-{
-  name: "Factory",
-  startingPrice: 130000,
-  amount: 0,
-  id: 5,
-  cookiesPerSecond: 260,
-  basePrice: 130000,
-  totalCookiesBaked: 0,
-  firstBoughtTime: null,
-  lore: `"Produces large quantities of cookies."`,
-  upgrade: 0
-}];
+import { Factories } from "./Factories.js";
 
-let Cookies = 13000;
+let Cookies = 13;
 let cookiesPerSecond = 0;
 let hoveredFactoryIndex = null;
+let selectedQuantity = 1;
 
 const FactoriesHTML = document.querySelector('.js-factories');
 
 
 Factories.forEach((factory, index) => {
-    let startingPrice = factory.startingPrice;
+    let startingPrice = factory.startingPrice.toLocaleString();
+    const encodedName = encodeURIComponent(factory.name)
     const specificFactory = `
-    <div class="shadow-box-surround">
       <div class="specific-factory" data-index="${index}">
-      <img src="Images/Factories/${factory.name}.png" class="factory-image">
+      <img src="Images/Factories/${encodedName}.png" class="factory-image">
       <div class="factory-name-cost-container">
         <p class="factory-name">${factory.name}</p>
-        <p class="factory-cost">${Math.floor(startingPrice)}</p>
+        <p class="factory-cost">${startingPrice}</p>
       </div>
       <div class="factory-amount">
         <p class="factory-amount-p">${factory.amount}</p>
       </div>  
       </div>
-    </div>
   `;
   FactoriesHTML.innerHTML += specificFactory;
 });
 
-  FactoriesHTML.addEventListener('click', (event) => {
-    const factoryElement = event.target.closest('.specific-factory');
-    if (!factoryElement) return;
+function targetClosestFactory (event) {
+  const factoryElement = event.target.closest('.specific-factory');
+  if (!factoryElement) return null;
+  return factoryElement.dataset.index;
+}
 
-    const index = factoryElement.dataset.index;
+FactoriesHTML.addEventListener('click', (event) => {
+  const index = targetClosestFactory(event);
+  if(index === null) return;
+  const factory = Factories[index];
+  const totalCost = calculateTotalPrice(factory, selectedQuantity);
+  if(selectedQuantity === 1) {
+    if(isBuying) {
+    buyFactory(selectedQuantity, index);
+  } else if (!isBuying){
+    sellFactory(selectedQuantity, index);
+  }
+  } else {
+    if(isBuying && Cookies >= totalCost) {
+    buyFactory(selectedQuantity, index);
+  } else if(!isBuying){
+    sellFactory(selectedQuantity, index);
+  }
+  }
+});
+
+function buyFactory (value, index) {
+
     const factory = Factories[index];
-
     if(Cookies < factory.startingPrice) {
       console.log("Not enough Cookies");
       return;
@@ -103,21 +66,65 @@ Factories.forEach((factory, index) => {
       }
     }
 
-    factoriesOwned = factory.amount; 
-    factory.amount += 1;
-    factory.startingPrice = factory.basePrice * Math.pow(1.15, factoriesOwned);
+    factory.amount += value;
+    factory.startingPrice = factory.basePrice * Math.pow(1.15, factory.amount);
+    factory.totalPrice += factory.startingPrice;
 
-    factoryCost = document.querySelectorAll('.factory-cost');
-    factoryAmount = document.querySelectorAll('.factory-amount p');
+    let factoryCost = document.querySelectorAll('.factory-cost');
+    let factoryAmount = document.querySelectorAll('.factory-amount p');
 
     factoryCost[index].innerHTML = Math.floor(factory.startingPrice);
     factoryAmount[index].innerHTML = factory.amount;
 
     updateCookiesCounters();
     hoverBoxUpdate(factory);
-  });
+  }
 
-  let factoryName = localStorage.getItem('FactoryName') || 'Gay';
+  function calculateTotalPrice(factory, quantity) {
+    let totalCookiesPrice = 0;
+    for (let i = 0; i < quantity; i++) {
+      totalCookiesPrice += factory.basePrice * Math.pow(1.15, factory.amount - 1 - i);
+      return Math.floor(totalCookiesPrice);
+   }
+  }
+
+
+  function sellFactory (value, index) {
+    const factory = Factories[index];
+    if (value === "max") {
+      value = factory.amount;
+    }
+    if(factory.amount < value) {
+      console.log("No factories to sell");
+      return;
+    }  
+
+      if (factory.amount === 0) {
+        factory.firstBoughtTime = 0;
+      }
+
+    factory.amount -= value;
+    factory.startingPrice = factory.basePrice * Math.pow(1.15, factory.amount);
+    Cookies += factory.totalCookiesPrice;
+
+
+    let factoryCost = document.querySelectorAll('.factory-cost');
+    let factoryAmount = document.querySelectorAll('.factory-amount p');
+
+    factoryCost[index].innerHTML = Math.floor(factory.startingPrice);
+    factoryAmount[index].innerHTML = factory.amount;
+
+    updateCookiesCounters();
+    hoverBoxUpdate(factory);
+  }
+
+function bigCookie() {
+  Cookies += 1;
+  document.querySelector('.total-cookies-baked').innerHTML = `${Math.floor(Cookies)} cookies`;
+}
+  
+
+  let factoryName = localStorage.getItem('FactoryName') || 'Isayso';
   const cookiesHTML = 
     // Left Side Cookie Clicker
   `
@@ -129,9 +136,8 @@ Factories.forEach((factory, index) => {
       </div>
     </div>
         <div class="circle-container">
-        <button class="cookie-click-button" onclick="bigCookie()"><img src="Images/Cookie.png" class="cookie-click-image"></button>
+        <img src="Images/Cookie.png" class="cookie-click-image">
         <div class="circle-path"></div>
-        <!-- Clockwise blocks -->
         <div class="spinning-block block-1"></div>
         <div class="spinning-block block-2"></div>
         <div class="spinning-block block-3"></div>
@@ -172,21 +178,18 @@ setInterval(() => {
   document.querySelector('.sugar-lumps').innerText = `${sugarLumps}`;
 }, 1000);
 
-
-function bigCookie () {
-  Cookies += 1;
-  document.querySelector('.total-cookies-baked').innerHTML = `${Math.floor(Cookies)} cookies`;
-}
-
 function updateCookiesCounters() {
   cookiesPerSecond = calculateCookiesPerSecond();
-  Cookies += cookiesPerSecond / 1000;
+  Cookies += cookiesPerSecond * 4 / 1000;
   document.querySelector('.total-cookies-baked').innerHTML = `${Math.floor(Cookies)} cookies`;
   document.querySelector('.cookies-per-second').innerHTML = `per second: ${Math.floor(cookiesPerSecond)}`;
 
   Factories.forEach((factory) => {
-  if (factory.firstBoughtTime !== null || factory.amount > 0) {
-    factory.totalCookiesBaked += factory.cookiesPerSecond;
+    const now = Date.now();
+    const elapsedTime = (now - factory.firstBoughtTime) / 1000;
+  
+    if (factory.firstBoughtTime !== null || factory.amount > 0) {
+    factory.totalCookiesBaked = factory.cookiesPerSecond * factory.amount * elapsedTime;
   }
   });
 
@@ -238,6 +241,9 @@ FactoriesHTML.addEventListener('mouseout', function(event) {
 });
 
 function hoverBoxUpdate(factory) {
+  let cookiesPerSecond = factory.cookiesPerSecond.toLocaleString();
+  let startingPrice = factory.startingPrice.toLocaleString();
+
   const hoverHTML = `
     <div class="hover-specific-factory">
         <img src="Images/Upgrades/${factory.name}-Upgrade-1.png">
@@ -245,14 +251,14 @@ function hoverBoxUpdate(factory) {
           <p class="hover-name-factory">${factory.name}</p>
           <p>owned: ${factory.amount}</p>
         </div>
-        <p class="hover-cost">${Math.floor(factory.startingPrice)}</p>
+        <p class="hover-cost">${Math.floor(startingPrice)}</p>
         <div class="hover-lore">
           <p>${factory.lore}</p>
         </div>
         <div class="hover-basic-information-specific-factory">
-          <p>each cursor produces <span class="span-color">${Math.floor(factory.cookiesPerSecond)} cookies per second</span></p>
-          <p>${factory.amount} cursors producting <span class="span-color">${Math.floor(factory.amount * factory.cookiesPerSecond)} total cookies</span> per second (<span class="span-color">${((factory.amount * factory.cookiesPerSecond) /Cookies * 100).toFixed(1)}%</span> of total CpS)</p>
-          <p><span class="span-color">${factory.totalCookiesBaked}</span> cookies clicked so far</p>
+          <p>each cursor produces <span class="span-color">${Math.floor(cookiesPerSecond)} cookies per second</span></p>
+          <p>${factory.amount} cursors producting <span class="span-color">${Math.floor(factory.amount * cookiesPerSecond)} total cookies</span> per second (<span class="span-color">${((factory.amount * cookiesPerSecond) /Cookies * 100).toFixed(1)}%</span> of total CpS)</p>
+          <p><span class="span-color">${Math.floor(factory.totalCookiesBaked)}</span> cookies clicked so far</p>
         </div>
     </div>
   `;
@@ -305,5 +311,66 @@ function ChangeNameClick() {
   nameButton.style.display = 'none';
 });
 }
+
+
+const buyButton = document.querySelector('.buy-button');
+const sellButton = document.querySelector('.sell-button');
+
+let isBuying = true;
+
+
+buyButton.addEventListener('click', function() {
+  buyButton.classList.add('active-glow');
+  sellButton.classList.remove('active-glow');
+  document.querySelector('.quantity-max-button').style.display = 'none'
+  isBuying = true;
+});
+
+sellButton.addEventListener('click', function() {
+  sellButton.classList.add('active-glow');
+  buyButton.classList.remove('active-glow');
+  document.querySelector('.quantity-max-button').style.display = 'block'
+  isBuying = false;
+});
+
+
+// ###################################################################################################
+
+const allQuantityButtons = document.querySelectorAll('.quantity-button');
+const quantityButtonOne = document.getElementById('1');
+const quantityButtonTen = document.getElementById('10');
+const quantityButtonHundred = document.getElementById('100');
+const quantityButtonMax = document.getElementById('999');
+
+
+quantityButtonOne.addEventListener('click', function () {
+  allQuantityButtons.forEach(btn => btn.classList.remove('active-glow'));
+  quantityButtonOne.classList.add('active-glow');
+  selectedQuantity = 1; 
+});
+
+quantityButtonTen.addEventListener('click', function () {
+  allQuantityButtons.forEach(btn => btn.classList.remove('active-glow'));
+  quantityButtonTen.classList.add('active-glow');
+  selectedQuantity = 10;  
+});
+
+quantityButtonHundred.addEventListener('click', function () {
+  allQuantityButtons.forEach(btn => btn.classList.remove('active-glow'));
+  quantityButtonHundred.classList.add('active-glow');
+  selectedQuantity = 100;  
+});
+
+quantityButtonMax.addEventListener('click', function () {
+  allQuantityButtons.forEach(btn => btn.classList.remove('active-glow'));
+  quantityButtonMax.classList.add('active-glow');
+  selectedQuantity = 'max';
+});
+
+// ###################################################################################################
+
+const cookieClickImage = document.querySelector('.cookie-click-image');
+cookieClickImage.addEventListener('click', bigCookie);
+bigCookie();
 
 changeName();

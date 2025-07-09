@@ -26,19 +26,24 @@
     <div class="factory-container">
       <!-- Center side with all bought factories and header -->
       <header>
-        <div class="news-container">
-          <button>Options</button>
+        <div class="user-buttons-news-container">
+          <div class="option-stats-buttons">
+            <button class="option-stats-buttons-b1">Options</button>
+            <button class="option-stats-buttons-b2">
+            <p class="sugar-lumps"></p>
+            Stats
+            </button>
+          </div>
+
           <p>Updating News</p>
-          <button>Info</button>
+
+          <div class="legacy-info-buttons">
+            <button class="info-b2">Info</button>
+            <button class="legacy-b1">Legacy</button>
+          </div>
+
         </div>
 
-        <div class="stats-legacy-container">
-          <button class="stats-button">
-          <p class="sugar-lumps"></p>
-          Stats
-        </button>
-          <button>Legacy</button>
-        </div>
           <div>
             <!-- divider image input -->
         <div class="divider-container">
@@ -53,7 +58,7 @@
         </div>
 
 
-            <div>
+            <div class="buy-factories-container">
               <!-- Js factories appear here -->
             </div>
           </div>
@@ -64,26 +69,35 @@
     
     </div>
 
-    <div class="purchase-container">
+    <div class="purchase-wrapper">
+      <div class="purchase-container">
       <!-- Right side with possible purchases -->
-      <p>Store</p>
-      <div>
-        JS upgrades appear here
+      <p class="purchase-store-p1">Store</p>
+      <div class="divider-container">
+      <img src="Images/woodTexture.png" class="divider-image">
+      </div>
+      <div class="upgrades-container">
+
+      </div>
+        <div class="divider-container">
+      <img src="Images/woodTexture.png" class="divider-image">
       </div>
       <div class="purchase-buttons">
         <div class="buy-sell-buttons">
-          <button>Buy</button>
-          <button>Sell</button>
+          <button class="buy-button active-glow">Buy</button>
+          <button class="sell-button">Sell</button>
         </div>
-        <button>1</button>
-        <button>10</button>
-        <button>100</button>
-        <button>Max</button>
+        <button class="quantity-button active-glow" data-quantity="1", id="1">1</button>
+        <button class="quantity-button" data-quantity="10" id="10">10</button>
+        <button class="quantity-button" data-quantity="100", id="100">100</button>
+        <button class="quantity-button quantity-max-button" id="999">Max</button>
       </div>
       <div class="js-factories">
       </div>
     </div>
   </div>
-  <script src="Cookies.js"></script>
+    </div>
+    
+  <script type="module" src="Cookies.js"></script>
 </body>
 </html>
