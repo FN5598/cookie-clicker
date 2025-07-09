@@ -1,4 +1,4 @@
-import { Factories } from "./Factories.js";
+import { Factories } from "./factories.js";
 
 let Cookies = 13;
 let cookiesPerSecond = 0;
